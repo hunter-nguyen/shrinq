@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 export default function DashboardPage() {
-    // State to hold input values
     const [longUrl, setLongUrl] = useState('');
     const [name, setName] = useState('');
     const [shortUrl, setShortenedUrl] = useState('');
@@ -16,11 +15,17 @@ export default function DashboardPage() {
         try {
             const response = await fetch('/api/shorten', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
+                headers: {
+                  'Content-Type': 'application/json',  // Make sure to specify content type
+                },
+                body: JSON.stringify({
+                  longUrl: data.longUrl,
+                  name: data.name
+                }),
+              });
 
-            const result = await response.json(); // Read response once
+            // read response once
+            const result = await response.json();
 
             if (!response.ok) {
                 setError(result.error || 'Unknown error');
@@ -38,8 +43,7 @@ export default function DashboardPage() {
     return (
         <>
             <h1>Dashboard</h1>
-
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => {handleSubmit(); e.preventDefault();}}>
                 <div>
                     Long URL:
                     <input

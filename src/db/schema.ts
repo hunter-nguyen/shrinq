@@ -7,7 +7,8 @@ export const urls = sqliteTable("urls", {
     name: text("name").notNull(), // alias
     shortCode: text("short_code").notNull(),
     regularUrl: text("regular_url").notNull(),
-    usageCount: integer("usage_count").default(0) // make sure this increments
+    usageCount: integer("usage_count").default(0), // make sure this increments
+    userId: integer("user_id").references(() => users.id) // Add foreign key reference
 })
 
 export const users = sqliteTable("users", {
@@ -16,9 +17,16 @@ export const users = sqliteTable("users", {
     email: text("email"),
 })
 
-// One to many relation (users --> urls)
 export const userRelations = relations(users, ({ many }) => ({
   urls: many(urls, {
+    relationName: "user_urls",
+  }),
+}));
+
+export const urlRelations = relations(urls, ({ one }) => ({
+  user: one(users, {
+    fields: [urls.userId],
+    references: [users.id],
     relationName: "user_urls",
   }),
 }));

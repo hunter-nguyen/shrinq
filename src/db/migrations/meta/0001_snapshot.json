@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f541793c-af46-4fbb-9d85-103d7a415d70",
-  "prevId": "bb18598a-4745-4a53-acc7-a9976c46fdae",
+  "id": "67adb857-ed36-4306-b92d-77213ec70a62",
+  "prevId": "5ae1984b-3b7c-4532-ab84-0762ffdabd64",
   "tables": {
     "urls": {
       "name": "urls",
@@ -42,10 +42,31 @@
           "notNull": false,
           "autoincrement": false,
           "default": 0
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "urls_user_id_users_id_fk": {
+          "name": "urls_user_id_users_id_fk",
+          "tableFrom": "urls",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -87,9 +108,7 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {
-      "\"urls\".\"short_url\"": "\"urls\".\"short_code\""
-    }
+    "columns": {}
   },
   "internal": {
     "indexes": {}

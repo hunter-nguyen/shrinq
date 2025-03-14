@@ -9,8 +9,7 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:drop": "drizzle-kit drop",
-    "db:introspect": "drizzle-kit introspect"
+    "db:drop": "drizzle-kit drop"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
