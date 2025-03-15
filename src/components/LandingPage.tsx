@@ -17,7 +17,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center">
             <Link href="/login">
-              <Button variant="ghost" className="h-9 px-4 text-sm font-medium text-[#1D1D1F] hover:bg-[#F5F5F7]">
+              <Button variant="ghost" className="h-9 px-4 text-sm font-medium text-[#1D1D1F] hover:bg-[#F5F5F7] cursor-pointer">
                 Log in
               </Button>
             </Link>
@@ -56,7 +56,7 @@ export default function LandingPage() {
                       <h2 className="text-2xl font-medium text-[#1D1D1F] mb-2">Please log in to shorten your URLs</h2>
                     </div>
                     <Link href="/login">
-                      <Button className="rounded-full bg-[#0071E3] text-white hover:bg-[#0077ED] transition-colors px-8 py-2.5 text-base">
+                      <Button className="rounded-full bg-[#0071E3] text-white hover:bg-[#0077ED] transition-colors px-8 py-2.5 text-base cursor-pointer">
                         Log in to continue
                       </Button>
                     </Link>
