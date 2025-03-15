@@ -15,6 +15,13 @@
       "when": 1741825615723,
       "tag": "0001_goofy_sabra",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1742078754083,
+      "tag": "0002_chemical_nocturne",
+      "breakpoints": true
     }
   ]
 }

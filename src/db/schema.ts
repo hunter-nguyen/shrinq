@@ -15,6 +15,7 @@ export const users = sqliteTable("users", {
     id: integer("id").primaryKey(),
     userName: text("user_name"),
     email: text("email"),
+    hashedPassword: text("password")
 })
 
 export const userRelations = relations(users, ({ many }) => ({

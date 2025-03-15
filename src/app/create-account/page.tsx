@@ -1,6 +1,5 @@
 "use client"
 
-
 import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -9,20 +8,21 @@ import { ArrowLeft, LinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { createUser } from "../actions/auth"
 
 export default function CreateAccountPage() {
-  const [name, setUsername] = useState("")
+  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
 
     setIsLoading(true);
-    // Ensure that we send the appropriate data to DB
+
     // form validation and auth; Zod?
 
 }
@@ -70,7 +70,7 @@ export default function CreateAccountPage() {
                   <Input
                     id="name"
                     type="text"
-                    value={name}
+                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="username"
                     required
