@@ -8,4 +8,5 @@ export async function createUser(formData: FormData) {
     const password = formData.get('password') as string;
 
     await saveUserToDB(username, email, password);
+    return { success: true };
 }

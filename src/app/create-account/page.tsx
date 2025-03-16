@@ -4,11 +4,12 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, LinkIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createUser } from "../actions/auth"
+import { z } from 'zod'
+import { useRouter } from "next/navigation"
 
 export default function CreateAccountPage() {
   const [username, setUsername] = useState("")
@@ -17,15 +18,47 @@ export default function CreateAccountPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
     setIsLoading(true);
 
-    // form validation and auth; Zod?
+    const formData = new FormData(e.target as HTMLFormElement);
 
-}
+    const schema = z.object({
+      user_name: z.string().min(4, "Username is required"),
+      email: z.string().email("Invalid email address"),
+      password: z.string().min(6, "Password must be at least 6 characters")
+    });
+
+    // Validate the form data
+    try {
+      const validatedData = schema.parse({
+        user_name: formData.get('user_name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+      });
+
+      // Call the createUser server action with validated data
+      const result = await createUser(formData);
+      if (result.success) {
+        router.push('/dashboard');
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set the error message to state
+        setError(error.errors.map(e => e.message).join(", "));
+      } else {
+        console.error(error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
@@ -70,6 +103,7 @@ export default function CreateAccountPage() {
                   <Input
                     id="name"
                     type="text"
+                    name="user_name"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="username"
@@ -85,6 +119,7 @@ export default function CreateAccountPage() {
                   <Input
                     id="email"
                     type="email"
+                    name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
@@ -100,6 +135,7 @@ export default function CreateAccountPage() {
                   <Input
                     id="password"
                     type="password"
+                    name="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a password"

@@ -94,7 +94,7 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-11 rounded-lg bg-[#0071E3] text-white hover:bg-[#0077ED] transition-colors opacity-50 cursor-not-allowed"
+                  className={`w-full h-11 rounded-lg ${!isLoading ? 'bg-[#0071E3] opacity-50 cursor-not-allowed' : 'bg-[#0077ED] cursor-pointer'} text-white transition-colors`}
                 >
                   {isLoading ? "Logging in..." : "Log in"}
                 </Button>

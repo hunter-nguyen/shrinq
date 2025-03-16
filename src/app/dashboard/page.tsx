@@ -1,5 +1,6 @@
 'use client';
 
+import { LinkIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export default function DashboardPage() {
@@ -41,42 +42,58 @@ export default function DashboardPage() {
         }
     };
     return (
-        <>
-            <h1>Dashboard</h1>
-            <form onSubmit={(e) => {handleSubmit(); e.preventDefault();}}>
-                <div>
-                    Long URL:
-                    <input
-                        type="url"
-                        value={longUrl}
-                        onChange={(e) => setLongUrl(e.target.value)}
-                        placeholder="Enter long URL"
-                        required
-                    />
+        <div>
+            <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
+                <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+                    <div className="flex items-center gap-2">
+                        <LinkIcon/>
+                        <span className="text-lg font-medium text-[#1D1D1F]">trim</span>
+                    </div>
+                    <a href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
+                        Back to home
+                    </a>
                 </div>
+            </header>
+            <div className="flex flex-col items-center justify-center h-screen">
+                <h1 className="text-4xl font-bold mb-4 mt-4">Dashboard</h1>
+                <form onSubmit={(e) => {handleSubmit(); e.preventDefault();}} className="flex flex-col items-center justify-center space-y-4">
+                    <div className="flex flex-col items-center justify-center">
+                        <label htmlFor="longUrl" className="text-lg font-medium">Long URL:</label>
+                        <input
+                            id="longUrl"
+                            type="url"
+                            value={longUrl}
+                            onChange={(e) => setLongUrl(e.target.value)}
+                            placeholder="Enter long URL"
+                            required
+                            className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
 
-                <div>
-                    Alias:
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter custom alias"
-                        required
-                    />
-                </div>
+                    <div className="flex flex-col items-center justify-center">
+                        <label htmlFor="name" className="text-lg font-medium">Alias:</label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Enter custom alias"
+                            required
+                            className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
 
-                <button type="submit">Shorten URL</button>
-            </form>
+                    <button type="submit" className="h-10 px-4 mt-4 rounded-lg bg-blue-500 text-white hover:bg-blue-700">Shorten URL</button>
+                </form>
 
-            {shortUrl && (
-                <p>
-                    Shortened URL: <a href={shortUrl} target="_blank">{shortUrl}</a>
-                </p>
-            )}
+                {shortUrl && (
+                    <p className="mt-4">
+                        Shortened URL: <a href={shortUrl} target="_blank" className="text-blue-500 hover:underline">{shortUrl}</a>
+                    </p>
+                )}
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-        </>
+                {error && <p style={{ color: 'red' }} className="mt-4">{error}</p>}
+            </div>
+        </div>
     );
-
 }
