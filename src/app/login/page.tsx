@@ -18,7 +18,6 @@ export default function LoginPage() {
 
     // TODO: this logs in the user; so check users table for email?
     e.preventDefault()
-
     setIsLoading(true);
 
   }
