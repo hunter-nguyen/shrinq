@@ -21,15 +21,19 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function validatePassword(email: string, password: string) {
+    try {
+        const user = await db.query.users.findFirst({
+            where: eq(schema.users.email, email),
+        });
 
-    const user = await db.query.users.findFirst({
-        where: eq(schema.users.email, email),
-    });
+        if (!user || !user.hashedPassword) {
+            return false;
+        }
 
-    if (!user || !user.hashedPassword) {
-        return false;
+        const match = await bcrypt.compare(password, user.hashedPassword!);
+        return match;
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw new Error("Database query failed");
     }
-
-    const match = await bcrypt.compare(password, user.hashedPassword!);
-    return match;
 }

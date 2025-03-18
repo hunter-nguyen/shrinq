@@ -8,7 +8,6 @@ import { ArrowLeft, LinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { z } from "zod"
 import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
@@ -86,6 +85,7 @@ export default function LoginPage() {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -107,6 +107,7 @@ export default function LoginPage() {
                   </div>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
