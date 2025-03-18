@@ -7,6 +7,8 @@ export async function createUser(formData: FormData) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
+    // TODO: Check for collisions
+
     await saveUserToDB(username, email, password);
     return { success: true };
 }

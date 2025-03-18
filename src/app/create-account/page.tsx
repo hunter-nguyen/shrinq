@@ -142,7 +142,7 @@ export default function CreateAccountPage() {
                     required
                     className="h-11 rounded-lg border-[#E5E5E5] bg-white focus-visible:ring-blue-500"
                   />
-                  <p className="text-xs text-[#86868B]">Must be at least 8 characters</p>
+                  <p className="text-xs text-[#86868B]">Must be at least 6 characters</p>
                 </div>
 
 

@@ -8,19 +8,46 @@ import { ArrowLeft, LinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { z } from "zod"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
 
-    // TODO: this logs in the user; so check users table for email?
-    e.preventDefault()
-    setIsLoading(true);
+     // src/app/login/page.tsx
+     const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      const formData = new FormData(e.target as HTMLFormElement);
+      const data = Object.fromEntries(formData.entries());
 
-  }
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          const result = await response.json();
+          setErrorMessage(result.error || 'Unknown error');
+        } else {
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        setErrorMessage("Something went wrong. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
@@ -52,7 +79,6 @@ export default function LoginPage() {
 
               <h1 className="text-2xl font-semibold text-[#1D1D1F] mb-2">Welcome back</h1>
               <p className="text-[#86868B] mb-8">Log in to your account to manage your shortened URLs</p>
-
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium text-[#1D1D1F]">
@@ -92,11 +118,17 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  disabled={isLoading}
-                  className={`w-full h-11 rounded-lg ${!isLoading ? 'bg-[#0071E3] opacity-50 cursor-not-allowed' : 'bg-[#0077ED] cursor-pointer'} text-white transition-colors`}
+                  className="w-full h-11 rounded-lg bg-[#0077ED] text-white transition-colors cursor-pointer"
                 >
-                  {isLoading ? "Logging in..." : "Log in"}
+                  Log in
                 </Button>
+
+                {/*TODO: Fix displaying error message */}
+                {errorMessage && (
+                  <div className="mt-4 text-center text-sm text-red-500">
+                    {errorMessage}
+                  </div>
+                )}
 
                 <div className="text-center text-sm text-[#86868B]">
                   Don't have an account?{" "}
