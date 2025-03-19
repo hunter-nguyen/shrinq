@@ -12,11 +12,12 @@ import { z } from 'zod'
 import { useRouter } from "next/navigation"
 
 export default function CreateAccountPage() {
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [createAccountError, setCreateAccountError] = useState("");
 
   const router = useRouter();
 
@@ -44,7 +45,12 @@ export default function CreateAccountPage() {
       const result = await createUser(formData);
       if (result.success) {
         router.push('/dashboard');
-      } else {
+      } else if (result.emailCollision) {
+        setCreateAccountError("Email already exists.")
+      } else if (result.userNameCollision) {
+        setCreateAccountError("Username already exists.")
+      }
+      else {
         setError("Something went wrong. Please try again.");
       }
 
@@ -66,7 +72,7 @@ export default function CreateAccountPage() {
         <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <LinkIcon className="h-5 w-5 text-[#1D1D1F]" />
-            <span className="text-lg font-medium text-[#1D1D1F]">trim</span>
+            <span className="text-lg font-medium text-[#1D1D1F]">abrev.me</span>
           </div>
           <Link href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
             Back to home
@@ -93,6 +99,10 @@ export default function CreateAccountPage() {
 
               {error && (
                 <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">{error}</div>
+              )}
+
+              {createAccountError && (
+                <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">{createAccountError}</div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">

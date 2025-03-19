@@ -54,7 +54,7 @@ export default function LoginPage() {
         <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <LinkIcon className="h-5 w-5 text-[#1D1D1F]" />
-            <span className="text-lg font-medium text-[#1D1D1F]">trim</span>
+            <span className="text-lg font-medium text-[#1D1D1F]">abrev.me</span>
           </div>
           <Link href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
             Back to home
