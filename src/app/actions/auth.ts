@@ -4,7 +4,6 @@ import { saveUserToDB } from "@/db/db";
 import * as schema from "@/db/schema"
 import { db } from "@/db";
 import { eq } from 'drizzle-orm';
-import { addHookAliases } from "next/dist/server/require-hook";
 
 export async function createUser(formData: FormData) {
     const username = formData.get('user_name') as string;

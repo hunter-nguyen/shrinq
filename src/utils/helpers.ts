@@ -5,13 +5,22 @@ import { eq } from 'drizzle-orm';
 // Helper functions
 
 // logic to shorten URL
-export function generateShortCode() {
+export async function generateShortCode() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     const charactersLength = characters.length;
     for ( let i = 0; i < 6; i++ ) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
+
+    const existingShortCode = await db.query.urls.findFirst({
+        where: eq(schema.urls.shortCode, result)
+    });
+
+    if (existingShortCode) {
+        generateShortCode();
+    }
+
     return result;
 }
 
