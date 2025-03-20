@@ -6,6 +6,8 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
+// TODO: Add state for if user login (redirect to dashboard instead of login)
+
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
@@ -13,7 +15,7 @@ export default function LandingPage() {
         <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <LinkIcon className="h-5 w-5 text-[#1D1D1F]" />
-            <span className="text-lg font-medium text-[#1D1D1F]">abrev.me</span>
+            <span className="text-lg font-medium text-[#1D1D1F]">shrinq.link</span>
           </div>
           <div className="flex items-center">
             <Link href="/login">
@@ -72,10 +74,10 @@ export default function LandingPage() {
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <div className="flex items-center gap-2">
               <LinkIcon className="h-4 w-4 text-[#1D1D1F]" />
-              <span className="text-sm font-medium text-[#1D1D1F]">abrev.me</span>
+              <span className="text-sm font-medium text-[#1D1D1F]">shrinq.link</span>
             </div>
             <div className="text-sm text-center text-[#86868B]">
-              © {new Date().getFullYear()} abrev.me. All rights reserved.
+              © {new Date().getFullYear()} shrinq.link. All rights reserved.
             </div>
           </div>
         </div>

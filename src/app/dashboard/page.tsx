@@ -1,6 +1,7 @@
 'use client';
 
 import { LinkIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function DashboardPage() {
@@ -9,7 +10,11 @@ export default function DashboardPage() {
     const [shortUrl, setShortenedUrl] = useState('');
     const [error, setError] = useState('');
 
+    const router = useRouter();
+
     // Function to handle form submission
+
+    // TODO: Add protected route
     const handleSubmit = async () => {
         const data = { longUrl, name };
 
@@ -40,23 +45,46 @@ export default function DashboardPage() {
             console.error(error);
             setError('An error occurred while shortening the URL');
         }
-    };
-    return (
-        <div>
-            <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
-                <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
-                    <div className="flex items-center gap-2">
-                        <LinkIcon/>
-                        <span className="text-lg font-medium text-[#1D1D1F]">abrev.me</span>
+    }
+
+        const handleLogout = async () => {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('Logout failed');
+                    setError('Error occurred while logging out');
+                    return;
+                }
+
+                router.push('/login');
+            } catch (error) {
+                console.error(error);
+                setError('Error occurred while logging out');
+            }
+        };
+        return (
+            <div>
+                <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
+                    <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+                        <div className="flex items-center gap-2">
+                            <LinkIcon />
+                            <span className="text-lg font-medium text-[#1D1D1F]">shrinq.link</span>
+                        </div>
+                        <a href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
+                            Back to home
+                        </a>
+                        <a href="#" onClick={handleLogout} className="text-sm text-[#86868B] hover:text-[#1D1D1F] rounded-full bg-red-500 text-white px-4 py-2">Logout</a>
                     </div>
-                    <a href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
-                        Back to home
-                    </a>
-                </div>
-            </header>
-            <div className="flex flex-col items-center justify-center h-screen">
-                <h1 className="text-4xl font-bold mb-4 mt-4">Dashboard</h1>
-                <form onSubmit={(e) => {handleSubmit(); e.preventDefault();}} className="flex flex-col items-center justify-center space-y-4">
+                </header>
+
+                <h1 className="text-4xl font-bold mb-4 mt-4 text-center">Dashboard</h1>
+                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center space-y-4">
                     <div className="flex flex-col items-center justify-center">
                         <label htmlFor="longUrl" className="text-lg font-medium">Long URL:</label>
                         <input
@@ -94,6 +122,5 @@ export default function DashboardPage() {
 
                 {error && <p style={{ color: 'red' }} className="mt-4">{error}</p>}
             </div>
-        </div>
-    );
-}
+        );
+    }
