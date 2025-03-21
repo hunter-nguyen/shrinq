@@ -1,6 +1,9 @@
    import { NextResponse } from 'next/server';
    import { validatePassword } from '@/utils/helpers';
    import { z } from 'zod';
+   import jwt, { Secret } from 'jsonwebtoken';
+   import * as schema from '@/db/schema'
+   import 'dotenv/config'
 
    const loginSchema = z.object({
     email: z.string().email("Invalid email format"),
@@ -11,10 +14,19 @@
 
     try {
       const body = await req.json();
+      // TODO: Maintain a httpOnly cookie
       const validatedData = loginSchema.parse(body);  // Validates the incoming data
       const { email, password } = validatedData;
       const isValid = await validatePassword(email, password);
       if (isValid) {
+
+      
+      const token = jwt.sign(
+        { userId: schema.users.id, email: schema.users.email },
+        process.env.JWT_SECRET as Secret,
+      );
+
+
         return NextResponse.json({ success: true });
       } else {
         return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
