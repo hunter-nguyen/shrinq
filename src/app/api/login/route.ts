@@ -1,7 +1,7 @@
    import { NextResponse } from 'next/server';
    import { validatePassword } from '@/utils/helpers';
    import { z } from 'zod';
-   import jwt, { Secret } from 'jsonwebtoken';
+   import * as jose from 'jose'
    import { getUserByEmail } from '@/db/db-utils';
    import 'dotenv/config'
 
@@ -26,12 +26,15 @@
           return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // create jwt
-        const token = jwt.sign(
-          { userId: user.id, email: user.email },
-          process.env.JWT_SECRET as Secret,
-          { expiresIn: '1h' }
-        );
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+        const token = await new jose.SignJWT({
+          userId: user.id,
+          email: user.email
+        })
+          .setProtectedHeader({ alg: 'HS256' })
+          .setIssuedAt()
+          .setExpirationTime('1h')
+          .sign(secret);
 
         const response = NextResponse.json({ success: true });
 
