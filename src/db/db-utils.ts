@@ -1,6 +1,7 @@
 import { db } from "./index"
 import { hashPassword } from "@/utils/helpers"
 import * as schema from "./schema"
+import { eq } from "drizzle-orm"
 
 export async function saveUrlToDB(shortCode: string, longUrl: string, name: string) {
     await db.insert(schema.urls).values({
@@ -15,4 +16,10 @@ export async function saveUserToDB(userName: string, email: string, hashedPasswo
         email: email,
         hashedPassword: await hashPassword(hashedPassword)
     })
+}
+
+export async function getUserByEmail(email: string) {
+    return await db.query.users.findFirst({
+        where: eq(schema.users.email, email),
+    });
 }

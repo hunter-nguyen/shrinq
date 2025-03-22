@@ -2,7 +2,7 @@
    import { validatePassword } from '@/utils/helpers';
    import { z } from 'zod';
    import jwt, { Secret } from 'jsonwebtoken';
-   import * as schema from '@/db/schema'
+   import { getUserByEmail } from '@/db/db-utils';
    import 'dotenv/config'
 
    const loginSchema = z.object({
@@ -11,27 +11,46 @@
    })
 
    export async function POST(req: Request) {
-
     try {
       const body = await req.json();
-      // TODO: Maintain a httpOnly cookie
-      const validatedData = loginSchema.parse(body);  // Validates the incoming data
+
+      const validatedData = loginSchema.parse(body);
       const { email, password } = validatedData;
+
       const isValid = await validatePassword(email, password);
+
       if (isValid) {
+        const user = await getUserByEmail(email);
 
-      
-      const token = jwt.sign(
-        { userId: schema.users.id, email: schema.users.email },
-        process.env.JWT_SECRET as Secret,
-      );
+        if (!user) {
+          return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
 
+        // create jwt
+        const token = jwt.sign(
+          { userId: user.id, email: user.email },
+          process.env.JWT_SECRET as Secret,
+          { expiresIn: '1h' }
+        );
 
-        return NextResponse.json({ success: true });
+        const response = NextResponse.json({ success: true });
+
+        // set httpOnly cookie
+        response.cookies.set('token', token, {
+          httpOnly: true,
+          path: '/',
+          maxAge: 3600,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        });
+
+        return response;
+
       } else {
         return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
       }
     } catch (error) {
+
       if (error instanceof z.ZodError) {
         const errorMessages = error.errors.map((e) => e.message).join(', ');
         return NextResponse.json({ error: errorMessages }, { status: 400 });

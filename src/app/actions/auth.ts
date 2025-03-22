@@ -1,6 +1,6 @@
 "use server";
 
-import { saveUserToDB } from "@/db/db";
+import { saveUserToDB } from "@/db/db-utils";
 import * as schema from "@/db/schema"
 import { db } from "@/db";
 import { eq } from 'drizzle-orm';

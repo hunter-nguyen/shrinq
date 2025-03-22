@@ -1,5 +1,5 @@
 import { generateShortCode } from "@/utils/helpers";
-import { saveUrlToDB } from "@/db/db";
+import { saveUrlToDB } from "@/db/db-utils";
 
 export async function POST(req: Request) {
     const { longUrl, name } = await req.json();

@@ -18,7 +18,6 @@ export default function LoginPage() {
 
   const router = useRouter();
 
-     // src/app/login/page.tsx
      const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setIsLoading(true);
@@ -31,7 +30,8 @@ export default function LoginPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({email, password}),
+          credentials: 'include'
         });
 
         if (!response.ok) {
