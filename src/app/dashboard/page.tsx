@@ -13,7 +13,8 @@ export default function DashboardPage() {
     const router = useRouter();
 
     // Function to handle form submission
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         const data = { longUrl, name };
 
         try {
@@ -33,14 +34,12 @@ export default function DashboardPage() {
 
             if (!response.ok) {
                 setError(result.error || 'Unknown error');
-                console.error('Error shortening URL:', result.error || 'Unknown error');
                 return;
             }
 
             setShortenedUrl(result.shortUrl);
             setError('');
         } catch (error) {
-            console.error(error);
             setError('An error occurred while shortening the URL');
         }
     }
@@ -113,12 +112,16 @@ export default function DashboardPage() {
                 </form>
 
                 {shortUrl && (
-                    <p className="mt-4">
-                        Shortened URL: <a href={shortUrl} target="_blank" className="text-blue-500 hover:underline">{shortUrl}</a>
+                    <p className="mt-4 flex justify-center">
+                        Shortened URL:  <a href={shortUrl} target="_blank" className="text-blue-500 hover:underline">{shortUrl}</a>
                     </p>
                 )}
 
-                {error && <p style={{ color: 'red' }} className="mt-4">{error}</p>}
+                {error && (
+                    <div className="mt-4 p-4 bg-red-100 text-red-800 text-center rounded shadow-md">
+                    <p>Error shortening URL: {error}</p>
+                    </div>
+                )}
             </div>
         );
     }
