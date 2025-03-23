@@ -4,7 +4,6 @@ import { saveUrlToDB } from "@/db/db-utils";
 export async function POST(req: Request) {
     const { longUrl, name } = await req.json();
 
-    // TODO: Implement custom aliases
     const shortCode = generateShortCode();
 
     await saveUrlToDB(await shortCode, longUrl, name);

@@ -13,8 +13,6 @@ export default function DashboardPage() {
     const router = useRouter();
 
     // Function to handle form submission
-
-    // TODO: Add protected route
     const handleSubmit = async () => {
         const data = { longUrl, name };
 

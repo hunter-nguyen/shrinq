@@ -6,8 +6,6 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
-// TODO: Add state for if user login (redirect to dashboard instead of login)
-
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
