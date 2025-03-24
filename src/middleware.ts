@@ -4,9 +4,6 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function middleware(req: NextRequest) {
     const tokenCookie = req.cookies.get('token');
 
-
-    // TODO: jwt is not supported in Next.js edge environment
-    // we can use jose
     if (!tokenCookie) {
         return NextResponse.redirect(new URL('/login', req.url));
     }

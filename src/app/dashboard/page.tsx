@@ -1,6 +1,6 @@
 'use client';
 
-import { LinkIcon } from 'lucide-react';
+import { LinkIcon, Copy } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -9,6 +9,7 @@ export default function DashboardPage() {
     const [name, setName] = useState('');
     const [shortUrl, setShortenedUrl] = useState('');
     const [error, setError] = useState('');
+    const [useAlias, setUseAlias] = useState(false);
 
     const router = useRouter();
 
@@ -44,27 +45,36 @@ export default function DashboardPage() {
         }
     }
 
-        const handleLogout = async () => {
-            try {
-                const response = await fetch('/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    console.error('Logout failed');
-                    setError('Error occurred while logging out');
-                    return;
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
+            });
 
-                router.push('/login');
-            } catch (error) {
-                console.error(error);
+            if (!response.ok) {
+                console.error('Logout failed');
                 setError('Error occurred while logging out');
+                return;
             }
-        };
+
+            router.push('/login');
+        } catch (error) {
+            console.error(error);
+            setError('Error occurred while logging out');
+        }
+    };
+
+    const handleCopyLink = async (shortUrl: string) => {
+        try {
+            await navigator.clipboard.writeText(shortUrl)
+        } catch (error) {
+            console.error(error);
+            setError('Unable to copy shortened URL');
+        }
+    }
         return (
             <div>
                 <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
@@ -95,31 +105,50 @@ export default function DashboardPage() {
                         />
                     </div>
 
-                    <div className="flex flex-col items-center justify-center">
-                        <label htmlFor="name" className="text-lg font-medium">Alias:</label>
+                    <label className="flex items-center space-x-2">
                         <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter custom alias"
-                            required
-                            className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                            type="checkbox"
+                            checked={useAlias}
+                            onChange={(e) => setUseAlias(e.target.checked)}
                         />
-                    </div>
+                        <span>Use custom alias?</span>
+                    </label>
+
+                    {useAlias && (
+                        <div className="flex flex-col items-center justify-center">
+                            <label htmlFor="name" className="text-lg font-medium">Alias:</label>
+                            <input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Enter custom alias"
+                                className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                    )}
 
                     <button type="submit" className="h-10 px-4 mt-4 rounded-lg bg-blue-500 text-white hover:bg-blue-700">Shorten URL</button>
                 </form>
 
-                {shortUrl && (
-                    <p className="mt-4 flex justify-center">
-                        Shortened URL:  <a href={shortUrl} target="_blank" className="text-blue-500 hover:underline">{shortUrl}</a>
-                    </p>
-                )}
+                <div className="mt-4 flex justify-center space-x-2 rounded-lg">
+                    {shortUrl && (
+                        <>
+                            <p className="bg-blue-100 text-gray-800 py-2 px-4 rounded text-center">{shortUrl}</p>
+                            <button
+                                onClick={() => handleCopyLink(shortUrl)}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                                title="Copy to clipboard"
+                            >
+                                <Copy size={20} className="text-gray-600" />
+                            </button>
+                        </>
+                    )}
+                </div>
 
                 {error && (
                     <div className="mt-4 p-4 bg-red-100 text-red-800 text-center rounded shadow-md">
-                    <p>Error shortening URL: {error}</p>
+                        <p className="text-red-500">Error shortening URL: {error}</p>
                     </div>
                 )}
             </div>

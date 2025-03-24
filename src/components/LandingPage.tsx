@@ -53,11 +53,11 @@ export default function LandingPage() {
                   </div>
                   <div className="mt-12 flex flex-col items-center justify-center space-y-8 pb-6">
                     <div className="w-full max-w-md text-center">
-                      <h2 className="text-2xl font-medium text-[#1D1D1F] mb-2">Please log in to shorten your URLs</h2>
+                      <h2 className="text-2xl font-medium text-[#1D1D1F] mb-2">get started now!</h2>
                     </div>
-                    <Link href="/login">
+                    <Link href="/dashboard">
                       <Button className="rounded-full bg-[#0071E3] text-white hover:bg-[#0077ED] transition-colors px-8 py-2.5 text-base cursor-pointer">
-                        Log in to continue
+                        log in to continue
                       </Button>
                     </Link>
                   </div>
