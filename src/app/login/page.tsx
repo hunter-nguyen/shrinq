@@ -125,7 +125,6 @@ export default function LoginPage() {
                   Log in
                 </Button>
 
-                {/*TODO: Fix displaying error message */}
                 {errorMessage && (
                   <div className="mt-4 text-center text-sm text-red-500">
                     {errorMessage}

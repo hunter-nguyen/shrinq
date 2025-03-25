@@ -3,11 +3,12 @@ import { saveUrlToDB } from "@/db/db-utils";
 import { db } from "@/db/index"
 import * as schema from "@/db/schema"
 import { eq } from "drizzle-orm";
+import * as jose from 'jose'
 
 export async function POST(req: Request) {
     const { longUrl, name } = await req.json();
+    const tokenCookie = req.headers.get('Cookie')
 
-    // TODO: add custom aliases
     let shortCode: string = '';
     const shortCodeAlias = name;
 
@@ -18,7 +19,6 @@ export async function POST(req: Request) {
     if (name && !existingShortCode) {
         shortCode = shortCodeAlias
     } else if (name && existingShortCode) {
-        // log or error to say that there is existing alias
         return new Response(
             JSON.stringify({ error: "Alias already taken. Please choose another." }),
             { status: 400, headers: { "Content-Type": "application/json" } }
@@ -26,8 +26,24 @@ export async function POST(req: Request) {
     } else {
         shortCode = await generateShortCode();
     }
+    const token = tokenCookie
+        ?.split('; ')
+        .find((c) => c.startsWith('token='))
+        ?.split('=')[1];
 
-    await saveUrlToDB(shortCode, longUrl, name);
+    if (!token) {
+        return new Response(
+            JSON.stringify({ error: "No token provided" }),
+            { status: 401, headers: { "Content-Type": "application/json" } }
+        );
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jose.jwtVerify<{ userId: number }>(token, secret);
+
+    const userId = payload.userId;
+
+    await saveUrlToDB(shortCode, longUrl, name, userId);
 
     return new Response(
         JSON.stringify({ shortUrl: `http://localhost:3000/${shortCode}` }),

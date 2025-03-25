@@ -3,11 +3,12 @@ import { hashPassword } from "@/utils/helpers"
 import * as schema from "./schema"
 import { eq } from "drizzle-orm"
 
-export async function saveUrlToDB(shortCode: string, longUrl: string, name: string) {
+export async function saveUrlToDB(shortCode: string, longUrl: string, name: string, userId: number) {
     await db.insert(schema.urls).values({
         name: name,
         shortCode: shortCode,
-        regularUrl: longUrl
+        regularUrl: longUrl,
+        userId: userId
     })
 }
 export async function saveUserToDB(userName: string, email: string, hashedPassword: string) {
