@@ -64,3 +64,35 @@ export async function POST(req: Request) {
         );
     }
 }
+
+export async function GET(req: Request) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if (!token) {
+            return NextResponse.json(
+                { error: "No token provided" },
+                { status: 401 }
+            );
+        }
+
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jose.jwtVerify<{ userId: number }>(token, secret);
+
+        const userId = payload.userId;
+
+        const userUrls = await db.query.urls.findMany({
+            where: eq(schema.urls.userId, userId)
+        });
+
+        return NextResponse.json({ userUrls }, { status: 200 });
+
+    } catch (error) {
+        console.error('Error fetching URLs:', error);
+        return NextResponse.json(
+            { error: "An unexpected error occurred" },
+            { status: 500 }
+        );
+    }
+}

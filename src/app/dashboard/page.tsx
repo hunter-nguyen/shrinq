@@ -14,6 +14,32 @@ export default function DashboardPage() {
 
     const router = useRouter();
 
+    // Add this useEffect to fetch URLs when component mounts
+    useEffect(() => {
+        const fetchUserUrls = async () => {
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch URLs');
+                }
+
+                const data = await response.json();
+                setUserUrls(data.userUrls);
+            } catch (error) {
+                console.error('Error fetching URLs:', error);
+                setError('Failed to load URLs');
+            }
+        };
+
+        fetchUserUrls();
+    }, []);
+
     // Function to handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,14 +122,13 @@ export default function DashboardPage() {
             <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center space-y-4">
                 <div className="flex flex-col items-center justify-center">
                     <label htmlFor="longUrl" className="text-lg font-medium">Long URL:</label>
-                    <input
+                    <textarea
                         id="longUrl"
-                        type="url"
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
                         placeholder="Enter long URL"
                         required
-                        className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                        className="h-20 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 resize-x"
                     />
                 </div>
 
@@ -119,13 +144,12 @@ export default function DashboardPage() {
                 {useAlias && (
                     <div className="flex flex-col items-center justify-center">
                         <label htmlFor="name" className="text-lg font-medium">Alias:</label>
-                        <input
+                        <textarea
                             id="name"
-                            type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Enter custom alias"
-                            className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                            className="h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 resize-x"
                         />
                     </div>
                 )}
@@ -148,27 +172,48 @@ export default function DashboardPage() {
                 )}
             </div>
 
-            {userUrls && (
-                <div className="flex justify-center items-center">
-                    <h3>Your URLs:</h3>
-                    <ul>
-                        {userUrls.map((url: any, index) => (
-                            <li key={index}>
-                                <p>
-                                    {url.regularUrl} : http://localhost:3000/{url.shortCode}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-
             {error && (
                 <div className="mt-4 p-4 bg-red-100 text-red-800 text-center rounded shadow-md">
                     <p className="text-red-500">Error shortening URL: {error}</p>
                 </div>
             )}
+
+            {userUrls && (
+                <>
+                    <div className="text-center">Your URLs</div>
+                    <div className="flex justify-center items-center">
+                        <table className="mt-4">
+                            <thead>
+                                <tr>
+                                    <th className="px-5">Regular URL</th>
+                                    <th className="px-5">Short URL</th>
+                                    <th className="px-5">Usage Count</th>
+                                    <th className="px-5">Copy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {userUrls.map((url: any, index) => (
+                                    <tr key={index}>
+                                        <td>{url.regularUrl}</td>
+                                        <td>http://localhost:3000/{url.shortCode}</td>
+                                        <td className="text-center">{url.usageCount}</td>
+                                        <td className="text-center">
+                                            <button
+                                                onClick={() => handleCopyLink(`http://localhost:3000/${url.shortCode}`)}
+                                                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                                                title="Copy to clipboard"
+                                            >
+                                                <Copy size={20} className="text-gray-600" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
+            )}
+
         </div>
     );
 }
