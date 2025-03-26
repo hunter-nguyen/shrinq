@@ -14,20 +14,12 @@ export default function DashboardPage() {
 
     const router = useRouter();
 
-    // Add this useEffect to fetch URLs when component mounts
+    // fetch URLs when component mounts
     useEffect(() => {
-        const fetchUserUrls = async () => {
+        const fetchUserUrls = async (page = 1, limit = 5) => {
             try {
-                const response = await fetch('/api/shorten', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch URLs');
-                }
+                const response = await fetch(`/api/shorten?page=${page}&limit=${limit}`);
+                if (!response.ok) throw new Error('Failed to fetch URLs');
 
                 const data = await response.json();
                 setUserUrls(data.userUrls);
@@ -187,6 +179,7 @@ export default function DashboardPage() {
                                 <tr>
                                     <th className="px-5">Regular URL</th>
                                     <th className="px-5">Short URL</th>
+                                    {/* TODO: update usage count on the DOM right away */}
                                     <th className="px-5">Usage Count</th>
                                     <th className="px-5">Copy</th>
                                 </tr>

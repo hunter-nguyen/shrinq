@@ -82,8 +82,17 @@ export async function GET(req: Request) {
 
         const userId = payload.userId;
 
+        const { searchParams } = new URL(req.url);
+
+        const page = parseInt(searchParams.get('page')!);
+        const limit = parseInt(searchParams.get('limit')!);
+        const offset = (page - 1) * limit;
+
         const userUrls = await db.query.urls.findMany({
-            where: eq(schema.urls.userId, userId)
+            where: eq(schema.urls.userId, userId),
+            orderBy: (urls, { asc }) => asc(urls.id),
+            limit,
+            offset,
         });
 
         return NextResponse.json({ userUrls }, { status: 200 });
