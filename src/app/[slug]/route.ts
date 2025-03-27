@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
   // Ensure `params` is available before destructuring
   if (!slug) {
-    return NextResponse.json({ error: "Slug parameter is missing" }, { status: 400 });
+    return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 
   try {
@@ -17,7 +17,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const urlRecord = await db.select().from(urls).where(eq(urls.shortCode, slug)).limit(1);
 
     if (urlRecord.length === 0) {
-      return NextResponse.json({ error: "Shortcode not found" }, { status: 404 });
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 
     const record = urlRecord[0];
@@ -34,7 +34,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       .limit(1);
 
     if (result.length === 0) {
-      return NextResponse.json({ error: "Shortcode not found" }, { status: 404 });
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 
     const longUrl = result[0].regularUrl;
@@ -43,6 +43,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
     } catch (error) {
       console.error("Database query error:", error);
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+      return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 }
