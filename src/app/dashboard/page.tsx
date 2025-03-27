@@ -11,18 +11,21 @@ export default function DashboardPage() {
     const [error, setError] = useState('');
     const [useAlias, setUseAlias] = useState(false);
     const [userUrls, setUserUrls] = useState([]);
+    const [currPage, setPage] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState(true);
 
     const router = useRouter();
 
-    // fetch URLs when component mounts
+    // fetch URLs when component mounts or when page changes
     useEffect(() => {
-        const fetchUserUrls = async (page = 1, limit = 5) => {
+        const fetchUserUrls = async (page = currPage, limit = 5) => {
             try {
                 const response = await fetch(`/api/shorten?page=${page}&limit=${limit}`);
                 if (!response.ok) throw new Error('Failed to fetch URLs');
 
                 const data = await response.json();
                 setUserUrls(data.userUrls);
+                setHasNextPage(data.userUrls.length >= limit);
             } catch (error) {
                 console.error('Error fetching URLs:', error);
                 setError('Failed to load URLs');
@@ -30,7 +33,16 @@ export default function DashboardPage() {
         };
 
         fetchUserUrls();
-    }, []);
+    }, [currPage]);
+
+    const handleNextPage = () => {
+        setPage(prevPage => prevPage + 1);
+    };
+
+    const handlePreviousPage = () => {
+        if (currPage <= 1) return;
+        setPage(prevPage => prevPage - 1);
+    };
 
     // Function to handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
@@ -57,7 +69,12 @@ export default function DashboardPage() {
             }
 
             setShortenedUrl(result.shortUrl);
-            setUserUrls(result.userUrls);
+            const refreshResponse = await fetch(`/api/shorten?page=${currPage}&limit=5`);
+            if (refreshResponse.ok) {
+                const refreshData = await refreshResponse.json();
+                setUserUrls(refreshData.userUrls);
+                setPage(currPage);
+            }
             setError('');
         } catch (error) {
             setError('An error occurred while shortening the URL');
@@ -94,6 +111,7 @@ export default function DashboardPage() {
             setError('Unable to copy shortened URL');
         }
     };
+
 
     return (
         <div>
@@ -172,25 +190,28 @@ export default function DashboardPage() {
 
             {userUrls && (
                 <>
-                    <div className="text-center">Your URLs</div>
-                    <div className="flex justify-center items-center">
-                        <table className="mt-4">
+                    <div className="text-center mt-6 text-xl font-semibold">Your URLs</div>
+                    <div className="flex flex-col justify-center items-center">
+                        <table className="mt-4 border-collapse w-full max-w-4xl">
                             <thead>
-                                <tr>
-                                    <th className="px-5">Regular URL</th>
-                                    <th className="px-5">Short URL</th>
-                                    {/* TODO: update usage count on the DOM right away */}
-                                    <th className="px-5">Usage Count</th>
-                                    <th className="px-5">Copy</th>
+                                <tr className="bg-gray-100">
+                                    <th className="px-5 py-2 border">Regular URL</th>
+                                    <th className="px-5 py-2 border">Short URL</th>
+                                    <th className="px-5 py-2 border">Usage Count</th>
+                                    <th className="px-5 py-2 border">Copy</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {userUrls.map((url: any, index) => (
-                                    <tr key={index}>
-                                        <td>{url.regularUrl}</td>
-                                        <td>http://localhost:3000/{url.shortCode}</td>
-                                        <td className="text-center">{url.usageCount}</td>
-                                        <td className="text-center">
+                                    <tr key={index} className="hover:bg-gray-50">
+                                        <td className="px-5 py-2 border">{url.regularUrl}</td>
+                                        <td className="px-5 py-2 border">
+                                            <a href={`http://localhost:3000/${url.shortCode}`} target="_blank" className="text-blue-500 hover:text-blue-700 hover:underline transition-colors">
+                                                https://localhost:3000/{url.shortCode}
+                                            </a>
+                                        </td>
+                                        <td className="px-5 py-2 border text-center">{url.usageCount}</td>
+                                        <td className="px-5 py-2 border text-center">
                                             <button
                                                 onClick={() => handleCopyLink(`http://localhost:3000/${url.shortCode}`)}
                                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
@@ -203,10 +224,34 @@ export default function DashboardPage() {
                                 ))}
                             </tbody>
                         </table>
+                        <div className="flex gap-4 mt-4 mb-8">
+                            <button
+                                onClick={handlePreviousPage}
+                                className={`px-4 py-2 rounded-md transition-colors flex items-center font-medium ${
+                                    currPage <= 1
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                                }`}
+                                disabled={currPage <= 1}
+                            >
+                                ← Previous
+                            </button>
+                            <span className="flex items-center px-4">Page {currPage}</span>
+                            <button
+                                onClick={handleNextPage}
+                                className={`px-4 py-2 rounded-md transition-colors flex items-center font-medium ${
+                                    !hasNextPage
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                                }`}
+                                disabled={!hasNextPage}
+                            >
+                                Next →
+                            </button>
+                        </div>
                     </div>
                 </>
             )}
-
         </div>
     );
 }
