@@ -132,8 +132,9 @@ export default function DashboardPage() {
             <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center space-y-4">
                 <div className="flex flex-col items-center justify-center">
                     <label htmlFor="longUrl" className="text-lg font-medium">Long URL:</label>
-                    <textarea
+                    <input
                         id="longUrl"
+                        type="url"
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
                         placeholder="Enter long URL"

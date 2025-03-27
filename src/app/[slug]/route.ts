@@ -38,7 +38,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       .set({ usageCount: sql`${urls.usageCount} + 1` })
       .where(eq(urls.id, record.id));
 
-    // cache the result in Redis for future requests
     await redis.set(`url:${slug}`, longUrl);
 
     return NextResponse.redirect(longUrl, 302);

@@ -18,7 +18,7 @@ export async function generateShortCode() {
     });
 
     if (existingShortCode) {
-        generateShortCode();
+       return generateShortCode();
     }
 
     return result;

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import * as jose from 'jose'
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import redis from "@/db/redis";
 
 export async function POST(req: Request) {
     try {
@@ -25,18 +26,20 @@ export async function POST(req: Request) {
         let shortCode: string = '';
         const shortCodeAlias = name;
 
-        const existingShortCode = await db.query.urls.findFirst({
-            where: eq(schema.urls.shortCode, name)
-        });
+        const existingShortCode = await redis.get(`url:${shortCodeAlias}`);
 
         if (name && !existingShortCode) {
             shortCode = shortCodeAlias;
-        } else if (name && existingShortCode) {
-            return NextResponse.json(
-                { error: "Alias already taken. Please choose another." },
-                { status: 400 }
-            );
-        } else {
+            const dbShortCode = await db.query.urls.findFirst({
+                where: eq(schema.urls.shortCode, shortCode)
+            });
+            if (dbShortCode) {
+                return NextResponse.json(
+                    { error: "Alias already taken. Please choose another." },
+                    { status: 400 }
+                );
+            }
+        }  else {
             shortCode = await generateShortCode();
         }
 
