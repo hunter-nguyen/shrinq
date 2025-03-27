@@ -234,7 +234,7 @@ export default function DashboardPage() {
                                 }`}
                                 disabled={currPage <= 1}
                             >
-                                ← Previous
+                                &larr; Previous
                             </button>
                             <span className="flex items-center px-4">Page {currPage}</span>
                             <button
@@ -246,7 +246,7 @@ export default function DashboardPage() {
                                 }`}
                                 disabled={!hasNextPage}
                             >
-                                Next →
+                                Next &rarr;
                             </button>
                         </div>
                     </div>

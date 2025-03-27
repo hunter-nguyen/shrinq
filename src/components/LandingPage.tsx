@@ -57,7 +57,7 @@ export default function LandingPage() {
                     </div>
                     <Link href="/dashboard">
                       <Button className="rounded-full bg-[#0071E3] text-white hover:bg-[#0077ED] transition-colors px-8 py-2.5 text-base cursor-pointer">
-                        log in to continue
+                        go to dashboard &rarr;
                       </Button>
                     </Link>
                   </div>
