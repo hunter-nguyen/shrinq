@@ -10,7 +10,9 @@ export async function saveUrlToDB(shortCode: string, longUrl: string, name: stri
         shortCode: shortCode,
         regularUrl: longUrl,
         userId: userId
-    })
+    });
+
+    await redis.set(`url:${shortCode}`, longUrl);
 }
 export async function saveUserToDB(userName: string, email: string, hashedPassword: string) {
     await db.insert(schema.users).values({

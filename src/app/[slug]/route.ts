@@ -42,11 +42,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const record = urlRecord[0];
     const longUrl = record.regularUrl;
 
-    // Update usage count
-    await db.update(urls)
-      .set({ usageCount: sql`${urls.usageCount} + 1` })
-      .where(eq(urls.id, record.id));
-
     // Cache the long URL in Redis
     await redis.set(`url:${slug}`, longUrl);
 
