@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({
-            shortUrl: `http://localhost:3000/${shortCode}`,
+            shortUrl: `https://shrinq.link/${shortCode}`,
             userUrls
         }, { status: 201 });
 

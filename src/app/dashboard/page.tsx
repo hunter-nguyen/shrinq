@@ -229,8 +229,8 @@ export default function DashboardPage() {
                                     <tr key={index}>
                                         <td className="px-5 py-2 border">{url.regularUrl}</td>
                                         <td className="px-5 py-2 border">
-                                            <a href={`http://localhost:3000/${url.shortCode}`} target="_blank" className="text-blue-500 hover:text-blue-700 hover:underline transition-colors">
-                                                https://localhost:3000/{url.shortCode}
+                                            <a href={`https://shrinq.link/${url.shortCode}`} target="_blank" className="text-blue-500 hover:text-blue-700 hover:underline transition-colors">
+                                                https://shrinq.link/{url.shortCode}
                                             </a>
                                         </td>
                                         <td className="px-5 py-2 border text-center">{url.usageCount}</td>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                                         </td>
                                         <td className="px-5 py-2 border text-center">
                                             <button
-                                                onClick={() => handleCopyLink(`http://localhost:3000/${url.shortCode}`)}
+                                                onClick={() => handleCopyLink(`https://shrinq.link/${url.shortCode}`)}
                                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
                                                 title="Copy to clipboard"
                                             >
