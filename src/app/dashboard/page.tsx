@@ -113,9 +113,21 @@ export default function DashboardPage() {
         }
     };
 
-    const handleDeleteURL = async (userId: number, regularUrl: string) => {
+    const handleDeleteURL = async (shortCode: string) => {
         try {
-            await deleteUserURL(userId, regularUrl);
+            const response = await fetch('/api/delete-url', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    shortCode: shortCode,
+                })
+            })
+
+            const data = await response.json();
+
+            setUserUrls((prevUrls) => prevUrls.filter((url: { shortCode: string }) => url.shortCode !== shortCode));
         } catch (error) {
             console.error("Error deleting URL: ", error);
         }
@@ -223,7 +235,7 @@ export default function DashboardPage() {
                                         </td>
                                         <td className="px-5 py-2 border text-center">{url.usageCount}</td>
                                         <td className="px-5 py-2 border text-center">
-                                            <button onClick={() => handleDeleteURL(Number(url.userId), url.regularUrl)}
+                                            <button onClick={() => handleDeleteURL(url.shortCode)}
                                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
                                             <X size={20} className="text-red-500" />
                                             </button>

@@ -31,14 +31,16 @@ export async function deleteUserURL(userId: number, shortCode: string) {
         throw new Error("User not found");
     }
 
-    const url = await db.query.users.findFirst({
-        where: eq(schema.urls.userId, userId)
-    })
-    if (!url) {
+    const userWithUrls = await db
+        .select()
+        .from(schema.urls)
+        .innerJoin(schema.users, eq(schema.users.id, schema.urls.userId));
+
+    if (userWithUrls.length < 0) {
         throw new Error("URL not found");
     }
 
-    await redis.del(`url:${shortCode}`);
+    const result = await redis.del(`url:${shortCode}`);
 
-    await db.delete(schema.urls).where(eq(schema.urls.id, url.id)).execute();
+    await db.delete(schema.urls).where(eq(schema.urls.userId, userId)).execute();
 }
