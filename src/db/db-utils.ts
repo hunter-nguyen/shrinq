@@ -2,6 +2,7 @@ import { db } from "./index"
 import { hashPassword } from "@/utils/helpers"
 import * as schema from "./schema"
 import { eq } from "drizzle-orm"
+import redis from "./redis"
 
 export async function saveUrlToDB(shortCode: string, longUrl: string, name: string, userId: number) {
     await db.insert(schema.urls).values({
@@ -23,4 +24,21 @@ export async function getUserByEmail(email: string) {
     return await db.query.users.findFirst({
         where: eq(schema.users.email, email),
     });
+}
+
+export async function deleteUserURL(userId: number, shortCode: string) {
+    if (!userId) {
+        throw new Error("User not found");
+    }
+
+    const url = await db.query.users.findFirst({
+        where: eq(schema.urls.userId, userId)
+    })
+    if (!url) {
+        throw new Error("URL not found");
+    }
+
+    await redis.del(`url:${shortCode}`);
+
+    await db.delete(schema.urls).where(eq(schema.urls.id, url.id)).execute();
 }

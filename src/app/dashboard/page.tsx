@@ -1,6 +1,7 @@
 'use client';
 
-import { LinkIcon, Copy } from 'lucide-react';
+import { deleteUserURL } from '@/db/db-utils';
+import { LinkIcon, Copy, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -112,6 +113,14 @@ export default function DashboardPage() {
         }
     };
 
+    const handleDeleteURL = async (userId: number, regularUrl: string) => {
+        try {
+            await deleteUserURL(userId, regularUrl);
+        } catch (error) {
+            console.error("Error deleting URL: ", error);
+        }
+    }
+
 
     return (
         <div>
@@ -199,12 +208,13 @@ export default function DashboardPage() {
                                     <th className="px-5 py-2 border">Regular URL</th>
                                     <th className="px-5 py-2 border">Short URL</th>
                                     <th className="px-5 py-2 border">Usage Count</th>
+                                    <th className="px-5 py-2 border">Delete</th>
                                     <th className="px-5 py-2 border">Copy</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {userUrls.map((url: any, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
+                                    <tr key={index}>
                                         <td className="px-5 py-2 border">{url.regularUrl}</td>
                                         <td className="px-5 py-2 border">
                                             <a href={`http://localhost:3000/${url.shortCode}`} target="_blank" className="text-blue-500 hover:text-blue-700 hover:underline transition-colors">
@@ -212,6 +222,12 @@ export default function DashboardPage() {
                                             </a>
                                         </td>
                                         <td className="px-5 py-2 border text-center">{url.usageCount}</td>
+                                        <td className="px-5 py-2 border text-center">
+                                            <button onClick={() => handleDeleteURL(Number(url.userId), url.regularUrl)}
+                                                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                                            <X size={20} className="text-red-500" />
+                                            </button>
+                                        </td>
                                         <td className="px-5 py-2 border text-center">
                                             <button
                                                 onClick={() => handleCopyLink(`http://localhost:3000/${url.shortCode}`)}

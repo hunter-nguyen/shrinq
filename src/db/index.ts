@@ -1,18 +1,12 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from "./schema"
-import Database from "better-sqlite3"
-import path from 'path';
+import { config } from 'dotenv';
+import { drizzle } from 'drizzle-orm/libsql';
+import * as schema from '@/db/schema';
 
-const dbPath = path.resolve('sqlite.db'); // Adjust the path as necessary
+config({ path: '.env' });
 
-const sqlite = new Database(dbPath);
-
-// Function to initialize the database
-const initializeDatabase = () => {
-
-    return drizzle(sqlite, {schema});
-
-};
-
-// Initialize the database
-export const db = initializeDatabase();
+export const db = drizzle({ connection: {
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN!,
+},
+schema,
+});
