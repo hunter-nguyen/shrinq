@@ -13,14 +13,12 @@ import { useRouter } from "next/navigation"
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const router = useRouter();
 
      const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setIsLoading(true);
       const formData = new FormData(e.target as HTMLFormElement);
       const data = Object.fromEntries(formData.entries());
 
@@ -30,7 +28,10 @@ export default function LoginPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({email, password}),
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password
+          }),
           credentials: 'include'
         });
 
@@ -44,7 +45,7 @@ export default function LoginPage() {
         console.error("An error occurred:", error);
         setErrorMessage("Something went wrong. Please try again.");
       } finally {
-        setIsLoading(false);
+        (false);
       }
     };
 
@@ -131,7 +132,7 @@ export default function LoginPage() {
                 )}
 
                 <div className="text-center text-sm text-[#86868B]">
-                  Don't have an account?{" "}
+                  Don't have an account?
                   <Link href="/create-account" className="text-[#0071E3] hover:underline">
                     Create an account
                   </Link>

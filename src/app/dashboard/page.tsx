@@ -1,7 +1,6 @@
 'use client';
 
-import { deleteUserURL } from '@/db/db-utils';
-import { LinkIcon, Copy, X } from 'lucide-react';
+import { LinkIcon, Copy, X, Link } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -77,8 +76,8 @@ export default function DashboardPage() {
                 setPage(currPage);
             }
             setError('');
-        } catch (error) {
-            setError('An error occurred while shortening the URL');
+        } catch (error: any) {
+            setError(`An error occurred while shortening the URL: ${error.message}`);
         }
     };
 
@@ -125,7 +124,7 @@ export default function DashboardPage() {
                 })
             })
 
-            const data = await response.json();
+            await response.json();
 
             setUserUrls((prevUrls) => prevUrls.filter((url: { shortCode: string }) => url.shortCode !== shortCode));
         } catch (error) {
@@ -142,9 +141,9 @@ export default function DashboardPage() {
                         <LinkIcon />
                         <span className="text-lg font-medium text-[#1D1D1F]">shrinq.link</span>
                     </div>
-                    <a href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
+                    <Link href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
                         Back to home
-                    </a>
+                    </Link>
                     <a href="#" onClick={handleLogout} className="text-sm text-[#86868B] hover:text-[#1D1D1F] rounded-full bg-red-500 text-white px-4 py-2">Logout</a>
                 </div>
             </header>

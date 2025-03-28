@@ -11,10 +11,11 @@ export async function middleware(req: NextRequest) {
         const token = tokenCookie.value;
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-        const { payload } = await jose.jwtVerify(token, secret);
+        await jose.jwtVerify(token, secret);
 
         return NextResponse.next();
     } catch (error) {
+        console.error("Middleware error: ", error);
         return NextResponse.redirect(new URL('/login', req.url));
     };
 };

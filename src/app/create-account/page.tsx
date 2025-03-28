@@ -40,8 +40,13 @@ export default function CreateAccountPage() {
         email: formData.get('email'),
         password: formData.get('password'),
       });
+      // Convert validatedData to FormData for createUser server action
+      const formDataForServer = new FormData();
+      formDataForServer.append('user_name', validatedData.user_name);
+      formData.append('email', validatedData.email);
+      formData.append('password', validatedData.password);
 
-      // Call the createUser server action with validated data
+      // Call the createUser server action with FormData
       const result = await createUser(formData);
       if (result.success) {
         router.push('/dashboard');

@@ -42,7 +42,7 @@ export async function deleteUserURL(userId: number, shortCode: string) {
         throw new Error("URL not found");
     }
 
-    const result = await redis.del(`url:${shortCode}`);
+    await redis.del(`url:${shortCode}`);
 
     await db.delete(schema.urls).where(eq(schema.urls.userId, userId)).execute();
 }
