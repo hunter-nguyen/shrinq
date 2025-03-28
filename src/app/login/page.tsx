@@ -101,10 +101,6 @@ export default function LoginPage() {
                     <Label htmlFor="password" className="text-sm font-medium text-[#1D1D1F]">
                       Password
                     </Label>
-                    {/* TODO: Implement forgot password */}
-                    <Link href="/forgot-password" className="text-xs text-[#0071E3] hover:underline">
-                      Forgot password?
-                    </Link>
                   </div>
                   <Input
                     id="password"
@@ -132,7 +128,7 @@ export default function LoginPage() {
                 )}
 
                 <div className="text-center text-sm text-[#86868B]">
-                  Don't have an account?
+                  Don't have an account? {" "}
                   <Link href="/create-account" className="text-[#0071E3] hover:underline">
                     Create an account
                   </Link>
