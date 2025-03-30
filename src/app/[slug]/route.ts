@@ -3,6 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { db } from '../../db/index';
 import { urls } from '../../db/schema';
 import redis from '../../db/redis';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -17,7 +18,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const cachedUrl = await redis.get(`url:${slug}`);
 
     if (cachedUrl) {
-      // Check if the cached URL corresponds to a valid short code in the database
       const urlRecord = await db.select().from(urls).where(eq(urls.shortCode, slug)).limit(1);
 
       if (urlRecord.length > 0) {
@@ -28,8 +28,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
           .execute()
           .catch(err => console.error("Error updating usage count:", err));
 
-        return NextResponse.redirect(cachedUrl as string, 302);
-      }
+          revalidatePath("/dashboard");
+
+          return NextResponse.redirect(cachedUrl as string, 302);
+        }
     }
 
     // If not found in cache, check the database
@@ -42,8 +44,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const record = urlRecord[0];
     const longUrl = record.regularUrl;
 
-    // Cache the long URL in Redis
+    // cache the long URL in Redis
     await redis.set(`url:${slug}`, longUrl);
+    revalidatePath("/dashboard");
 
     return NextResponse.redirect(longUrl, 302);
 
