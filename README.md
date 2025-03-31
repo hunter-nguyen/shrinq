@@ -18,4 +18,4 @@ A simple and efficient URL shortener built with Next.js and SQLite for secure an
 - **Caching**: Redis (Upstash)
 
 ## Architecture 📊
-![Screenshot of system diagram](https://github.com/hunter-nguyen/shrinq/tree/main/public/diagram.png)
+![Screenshot of system diagram](public/diagram.png)
