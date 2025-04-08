@@ -10,20 +10,27 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
       <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="w-full flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+          {/* Left side: Logo */}
           <div className="flex items-center gap-2">
             <LinkIcon className="h-5 w-5 text-[#1D1D1F]" />
             <span className="text-lg font-medium text-[#1D1D1F]">shrinq.link</span>
           </div>
+
+          {/* Right side: Log In button */}
           <div className="flex items-center">
             <Link href="/login">
-              <Button variant="ghost" className="h-9 px-4 text-sm font-medium text-[#1D1D1F] hover:bg-[#F5F5F7] cursor-pointer">
+              <Button
+                variant="ghost"
+                className="h-9 px-4 text-sm font-medium text-[#1D1D1F] hover:bg-[#F5F5F7] cursor-pointer"
+              >
                 Log in
               </Button>
             </Link>
           </div>
         </div>
       </header>
+
       <main className="flex-1">
         <section className="relative overflow-hidden py-32 md:py-40 px-4">
           <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F7] to-[#FAFAFA]" />

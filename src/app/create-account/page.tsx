@@ -74,11 +74,12 @@ export default function CreateAccountPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
       <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-[#FAFAFA]/90 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="w-full flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <LinkIcon className="h-5 w-5 text-[#1D1D1F]" />
             <span className="text-lg font-medium text-[#1D1D1F]">shrinq.link</span>
           </div>
+
           <Link href="/" className="text-sm text-[#86868B] hover:text-[#1D1D1F]">
             Back to home
           </Link>
